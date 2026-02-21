@@ -2,38 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Hiking Water Carry Calculator</title>
     <link rel="preconnect" href="https://js.arcgis.com">
     <link rel="stylesheet" href="https://js.arcgis.com/calcite-components/2.8.0/calcite.css" />
     <script type="module" src="https://js.arcgis.com/calcite-components/2.8.0/calcite.esm.js"></script>
     <style>
-        body {
-            --calcite-color-brand: #00c291;
-            --calcite-color-brand-hover: #00ad82;
-            --calcite-color-brand-press: #00916d;
-            --calcite-color-background: #f2f7f4;
-            --calcite-color-foreground-1: #fafffd;
-            --calcite-color-foreground-2: #edf7f3;
-            --calcite-color-foreground-3: #e4ebe8;
-            --calcite-color-foreground-current: #c7ffda;
-            --calcite-color-info: #007f99;
-            --calcite-color-success: #47ac35;
-            --calcite-color-warning: #eeb417;
-            --calcite-color-danger: #d92024;
-            --calcite-color-danger-hover: #a91e20;
-            --calcite-color-danger-press: #7c1315;
-            --calcite-color-text-1: #222927;
-            --calcite-color-text-2: #333d3a;
-            --calcite-color-text-3: #3a4541;
-            --calcite-color-text-inverse: #fafffd;
-            --calcite-color-text-link: #04716c;
-            --calcite-color-border-1: #c3c7c5;
-            --calcite-color-border-2: #cdd4d0;
-            --calcite-color-border-3: #dfe8e3;
-            --calcite-color-border-input: #727d77;
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -47,7 +21,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 24px;
+            padding: max(24px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
         }
 
         .calculator-container {
@@ -89,6 +63,27 @@
             font-weight: 400;
         }
 
+        .switch-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .switch-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex: 1;
+            gap: 6px;
+        }
+
+        .switch-label span {
+            color: var(--calcite-color-text-1);
+            font-size: 13px;
+            font-weight: 400;
+            letter-spacing: 0.01em;
+        }
+
         calcite-button {
             width: 100%;
             margin-top: 36px;
@@ -105,27 +100,40 @@
             margin-top: 0;
         }
 
-        calcite-notice {
+        #result-card {
             margin-top: 40px;
         }
 
         .result-content {
+            padding: 24px 16px;
+        }
+
+        .result-header {
             text-align: center;
-            padding: 16px 0;
+            padding-bottom: 8px;
+            margin-bottom: 20px;
         }
 
         .result-amount {
             font-size: 56px;
             font-weight: 300;
             color: var(--calcite-color-brand);
-            margin-bottom: 4px;
+            margin-bottom: 8px;
             letter-spacing: -0.03em;
         }
 
         .result-label {
-            color: var(--calcite-color-text-1);
-            font-size: 15px;
-            margin-bottom: 20px;
+            color: var(--calcite-color-text-2);
+            font-size: 14px;
+            margin-bottom: 4px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .result-duration {
+            color: var(--calcite-color-text-3);
+            font-size: 13px;
             font-weight: 400;
         }
 
@@ -134,12 +142,30 @@
             font-size: 13px;
             line-height: 1.6;
             font-weight: 400;
+            text-align: left;
+        }
+
+        .result-details p {
+            margin: 0 0 8px 0;
+        }
+
+        .result-details p:last-child:not(.result-disclaimer) {
+            margin-bottom: 0;
+        }
+
+        .result-disclaimer {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--calcite-color-border-3);
+            font-size: 12px;
+            color: var(--calcite-color-text-3);
+            font-style: italic;
         }
 
         calcite-label {
             color: var(--calcite-color-text-1);
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 400;
             letter-spacing: 0.01em;
         }
 
@@ -150,6 +176,7 @@
         .label-with-info {
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 6px;
         }
 
@@ -182,30 +209,45 @@
             margin: 0;
         }
 
-        .required-indicator {
-            color: var(--calcite-color-danger);
-            margin-left: 2px;
+        .multiplier {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--calcite-color-border-3);
+            font-weight: 500;
+            color: var(--calcite-color-brand);
         }
 
-        @media (prefers-color-scheme: dark) {
+        .required-indicator {
+            color: #d83020;
+            margin-left: 4px;
+            display: inline-flex;
+            align-items: center;
+            vertical-align: middle;
+        }
+
+        .validation-popover {
+            --calcite-color-foreground-1: var(--calcite-color-danger);
+        }
+
+        .validation-popover .popover-content {
+            color: var(--calcite-color-text-inverse);
+        }
+
+        @media (max-width: 480px) {
             body {
-                --calcite-color-brand: #00e7b0;
-                --calcite-color-brand-hover: #1deeba;
-                --calcite-color-brand-press: #00c291;
-                --calcite-color-background: #1a211d;
-                --calcite-color-foreground-1: #202825;
-                --calcite-color-foreground-2: #2a322e;
-                --calcite-color-foreground-3: #363f3b;
-                --calcite-color-foreground-current: #004d3f;
-                --calcite-color-text-1: #f3f7f5;
-                --calcite-color-text-2: #d7deda;
-                --calcite-color-text-3: #b9c0bd;
-                --calcite-color-text-inverse: #1a211d;
-                --calcite-color-text-link: #00e7b0;
-                --calcite-color-border-1: #525a56;
-                --calcite-color-border-2: #434a47;
-                --calcite-color-border-3: #363f3b;
-                --calcite-color-border-input: #9ea39f;
+                padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+            }
+
+            .calculator-container {
+                padding: 32px 24px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .result-amount {
+                font-size: 48px;
             }
         }
     </style>
@@ -224,17 +266,28 @@
             <div class="input-group">
                 <calcite-label>
                     <div class="label-with-info">
-                        <span id="distance-label">Distance (km)<span class="required-indicator">*</span></span>
+                        <span id="distance-label">Distance (km)<span class="required-indicator" id="distance-required"><calcite-icon aria-hidden="true" scale="s" icon="bullet-point"></calcite-icon></span></span>
                         <calcite-action id="distance-info" icon="information" text="Info" scale="s" class="info-icon"></calcite-action>
                     </div>
-                    <calcite-input-number id="distance" step="0.1" min="0" value="" 
-                        icon-start="walk" required scale="m">
+                    <calcite-input-number id="distance" step="0.1" min="0" value="20" 
+                        icon-start="walk" required scale="m" inputmode="decimal">
                     </calcite-input-number>
                 </calcite-label>
+                <calcite-popover reference-element="distance-required" placement="top" trigger="hover">
+                    <div class="popover-content">
+                        Required
+                    </div>
+                </calcite-popover>
+                <calcite-popover id="distance-validation" reference-element="distance" placement="top" auto-close class="validation-popover" style="display: none;">
+                    <div class="popover-content">
+                        <strong>Required field</strong>
+                        <p>Please enter a valid distance greater than 0.</p>
+                    </div>
+                </calcite-popover>
                 <calcite-popover reference-element="distance-info" placement="auto" auto-close>
                     <div class="popover-content">
                         <strong>Why distance matters</strong>
-                        <p>Longer distances mean more time on the trail and more physical exertion. Your body loses water through perspiration, breathing, and metabolic processes. The calculation assumes an average pace of 4km/h on flat terrain.</p>
+                        <p>Longer distances mean more time on the trail and more physical exertion. Your body loses water through perspiration, breathing, and metabolic processes.</p>
                     </div>
                 </calcite-popover>
             </div>
@@ -242,13 +295,53 @@
             <div class="input-group">
                 <calcite-label>
                     <div class="label-with-info">
-                        <span id="elevation-label">Elevation gain (meters)<span class="required-indicator">*</span></span>
-                        <calcite-action id="elevation-info" icon="information" text="Info" scale="s" class="info-icon"></calcite-action>
+                        <span id="pace-label">Pace (km/h)<span class="required-indicator" id="pace-required"><calcite-icon aria-hidden="true" scale="s" icon="bullet-point"></calcite-icon></span></span>
+                        <calcite-action id="pace-info" icon="information" text="Info" scale="s" class="info-icon"></calcite-action>
                     </div>
-                    <calcite-input-number id="elevation" step="10" min="0" value="0" 
-                        icon-start="altitude" required scale="m">
+                    <calcite-input-number id="pace" step="0.1" min="0.1" value="4" 
+                        icon-start="clock" required scale="m" inputmode="decimal">
                     </calcite-input-number>
                 </calcite-label>
+                <calcite-popover reference-element="pace-required" placement="top" trigger="hover">
+                    <div class="popover-content">
+                        Required
+                    </div>
+                </calcite-popover>
+                <calcite-popover id="pace-validation" reference-element="pace" placement="top" auto-close class="validation-popover" style="display: none;">
+                    <div class="popover-content">
+                        <strong>Required field</strong>
+                        <p>Please enter a valid pace greater than 0.</p>
+                    </div>
+                </calcite-popover>
+                <calcite-popover reference-element="pace-info" placement="auto" auto-close>
+                    <div class="popover-content">
+                        <strong>Why pace matters</strong>
+                        <p>Your hiking pace determines how long you'll be on the trail. Faster paces mean shorter trips but higher exertion. Typical hiking pace is 4km/h (2.5mph) on flat terrain, slower with elevation gain or heavy pack.</p>
+                    </div>
+                </calcite-popover>
+            </div>
+
+            <div class="input-group">
+                <calcite-label>
+                    <div class="label-with-info">
+                        <span id="elevation-label">Elevation gain (meters)<span class="required-indicator" id="elevation-required"><calcite-icon aria-hidden="true" scale="s" icon="bullet-point"></calcite-icon></span></span>
+                        <calcite-action id="elevation-info" icon="information" text="Info" scale="s" class="info-icon"></calcite-action>
+                    </div>
+                    <calcite-input-number id="elevation" step="10" min="0" value="1000" 
+                        icon-start="altitude" required scale="m" inputmode="decimal">
+                    </calcite-input-number>
+                </calcite-label>
+                <calcite-popover reference-element="elevation-required" placement="top" trigger="hover">
+                    <div class="popover-content">
+                        Required
+                    </div>
+                </calcite-popover>
+                <calcite-popover id="elevation-validation" reference-element="elevation" placement="top" auto-close class="validation-popover" style="display: none;">
+                    <div class="popover-content">
+                        <strong>Required field</strong>
+                        <p>Please enter a valid elevation (0 or greater).</p>
+                    </div>
+                </calcite-popover>
                 <calcite-popover reference-element="elevation-info" placement="auto" auto-close>
                     <div class="popover-content">
                         <strong>Why elevation gain matters</strong>
@@ -260,13 +353,24 @@
             <div class="input-group">
                 <calcite-label>
                     <div class="label-with-info">
-                        <span id="temp-label">Air temperature (°C)<span class="required-indicator">*</span></span>
+                        <span id="temp-label">Air temperature (°C)<span class="required-indicator" id="temp-required"><calcite-icon aria-hidden="true" scale="s" icon="bullet-point"></calcite-icon></span></span>
                         <calcite-action id="temp-info" icon="information" text="Info" scale="s" class="info-icon"></calcite-action>
                     </div>
-                    <calcite-input-number id="temperature" step="1" value="" 
-                        icon-start="temperature" required scale="m">
+                    <calcite-input-number id="temperature" step="1" value="20" 
+                        icon-start="temperature" required scale="m" inputmode="decimal">
                     </calcite-input-number>
                 </calcite-label>
+                <calcite-popover reference-element="temp-required" placement="top" trigger="hover">
+                    <div class="popover-content">
+                        Required
+                    </div>
+                </calcite-popover>
+                <calcite-popover id="temp-validation" reference-element="temperature" placement="top" auto-close class="validation-popover" style="display: none;">
+                    <div class="popover-content">
+                        <strong>Required field</strong>
+                        <p>Please enter a valid temperature.</p>
+                    </div>
+                </calcite-popover>
                 <calcite-popover reference-element="temp-info" placement="auto" auto-close>
                     <div class="popover-content">
                         <strong>Why temperature matters</strong>
@@ -293,17 +397,35 @@
             </div>
 
             <div class="input-group">
-                <calcite-label>
-                    <div class="label-with-info">
+                <div class="switch-container">
+                    <calcite-switch id="mouth-breather" scale="m"></calcite-switch>
+                    <div class="switch-label">
                         <span>Mouth breather</span>
                         <calcite-action id="mouth-breather-info" icon="information" text="Info" scale="s" class="info-icon"></calcite-action>
                     </div>
-                    <calcite-switch id="mouth-breather" scale="m"></calcite-switch>
-                </calcite-label>
+                </div>
                 <calcite-popover reference-element="mouth-breather-info" placement="auto" auto-close>
                     <div class="popover-content">
                         <strong>Why mouth breathing matters</strong>
                         <p>Breathing through your mouth during exercise increases water loss through respiration by about 15%. Mouth breathing bypasses the nasal passages which normally humidify exhaled air, leading to more moisture loss with each breath.</p>
+                        <div class="multiplier">Multiplier: 1.15×</div>
+                    </div>
+                </calcite-popover>
+            </div>
+
+            <div class="input-group">
+                <div class="switch-container">
+                    <calcite-switch id="heavy-sweater" scale="m"></calcite-switch>
+                    <div class="switch-label">
+                        <span>Heavy sweater</span>
+                        <calcite-action id="heavy-sweater-info" icon="information" text="Info" scale="s" class="info-icon"></calcite-action>
+                    </div>
+                </div>
+                <calcite-popover reference-element="heavy-sweater-info" placement="auto" auto-close>
+                    <div class="popover-content">
+                        <strong>Why sweating rate matters</strong>
+                        <p>Some people naturally sweat more due to genetics, fitness level, or higher sweat gland density. Heavy sweaters can lose 20-30% more fluid during exercise compared to average, requiring additional water intake to maintain proper hydration and performance.</p>
+                        <div class="multiplier">Multiplier: 1.25×</div>
                     </div>
                 </calcite-popover>
             </div>
@@ -314,15 +436,16 @@
             </div>
         </form>
 
-        <calcite-notice id="result" kind="success" scale="m" style="display: none;">
-            <div slot="message">
-                <div class="result-content">
+        <calcite-card id="result-card" style="display: none;">
+            <div class="result-content">
+                <div class="result-header">
                     <div class="result-amount" id="result-amount">0</div>
-                    <div class="result-label" id="result-label">liters of water</div>
-                    <div class="result-details" id="result-details"></div>
+                    <div class="result-label" id="result-label">liters</div>
+                    <div class="result-duration" id="result-duration"></div>
                 </div>
+                <div class="result-details" id="result-details"></div>
             </div>
-        </calcite-notice>
+        </calcite-card>
     </div>
 
     <script type="module">
@@ -335,16 +458,18 @@
         darkModeQuery.addEventListener('change', updateTheme);
 
         let currentUnit = 'metric';
+        let lastResult = null;
 
         const uvSlider = document.getElementById('uv-slider');
         const labels = {
             distance: document.getElementById('distance-label'),
             temp: document.getElementById('temp-label'),
-            elevation: document.getElementById('elevation-label')
+            elevation: document.getElementById('elevation-label'),
+            pace: document.getElementById('pace-label')
         };
         const unitLabels = {
-            metric: { distance: 'Distance (km)<span class="required-indicator">*</span>', temp: 'Air temperature (°C)<span class="required-indicator">*</span>', elevation: 'Elevation gain (meters)<span class="required-indicator">*</span>' },
-            imperial: { distance: 'Distance (miles)<span class="required-indicator">*</span>', temp: 'Air temperature (°F)<span class="required-indicator">*</span>', elevation: 'Elevation gain (feet)<span class="required-indicator">*</span>' }
+            metric: { distance: 'Distance (km)<span class="required-indicator" id="distance-required"><calcite-icon aria-hidden="true" scale="s" icon="bullet-point"></calcite-icon></span>', temp: 'Air temperature (°C)<span class="required-indicator" id="temp-required"><calcite-icon aria-hidden="true" scale="s" icon="bullet-point"></calcite-icon></span>', elevation: 'Elevation gain (meters)<span class="required-indicator" id="elevation-required"><calcite-icon aria-hidden="true" scale="s" icon="bullet-point"></calcite-icon></span>', pace: 'Pace (km/h)<span class="required-indicator" id="pace-required"><calcite-icon aria-hidden="true" scale="s" icon="bullet-point"></calcite-icon></span>' },
+            imperial: { distance: 'Distance (miles)<span class="required-indicator" id="distance-required"><calcite-icon aria-hidden="true" scale="s" icon="bullet-point"></calcite-icon></span>', temp: 'Air temperature (°F)<span class="required-indicator" id="temp-required"><calcite-icon aria-hidden="true" scale="s" icon="bullet-point"></calcite-icon></span>', elevation: 'Elevation gain (feet)<span class="required-indicator" id="elevation-required"><calcite-icon aria-hidden="true" scale="s" icon="bullet-point"></calcite-icon></span>', pace: 'Pace (mph)<span class="required-indicator" id="pace-required"><calcite-icon aria-hidden="true" scale="s" icon="bullet-point"></calcite-icon></span>' }
         };
 
         uvSlider.histogram = Array.from({length: 12}, (_, i) => [i, i * 5]);
@@ -366,81 +491,189 @@
             if (label?.[11]) label[11].textContent = '11+';
         }, 300);
 
+        // Setup hover popovers for required indicators
+        const setupRequiredPopover = (indicatorId, popoverId) => {
+            const indicator = document.getElementById(indicatorId);
+            const popover = document.querySelector(`calcite-popover[reference-element="${indicatorId}"]`);
+            
+            if (indicator && popover) {
+                indicator.addEventListener('mouseenter', () => {
+                    popover.open = true;
+                });
+                indicator.addEventListener('mouseleave', () => {
+                    popover.open = false;
+                });
+            }
+        };
+
+        setTimeout(() => {
+            setupRequiredPopover('distance-required');
+            setupRequiredPopover('pace-required');
+            setupRequiredPopover('elevation-required');
+            setupRequiredPopover('temp-required');
+        }, 500);
+
         document.getElementById('unit-control').addEventListener('calciteSegmentedControlChange', e => {
             currentUnit = e.target.value;
             Object.entries(unitLabels[currentUnit]).forEach(([key, text]) => labels[key].innerHTML = text);
-            document.getElementById('result').style.display = 'none';
+            
+            // Re-setup hover popovers after label update
+            setTimeout(() => {
+                setupRequiredPopover('distance-required');
+                setupRequiredPopover('pace-required');
+                setupRequiredPopover('elevation-required');
+                setupRequiredPopover('temp-required');
+            }, 100);
+            
+            // Convert defaults when switching units
+            const distanceInput = document.getElementById('distance');
+            const paceInput = document.getElementById('pace');
+            const elevationInput = document.getElementById('elevation');
+            const tempInput = document.getElementById('temperature');
+            
+            if (currentUnit === 'imperial') {
+                // Convert to imperial
+                if (parseFloat(distanceInput.value) === 20) distanceInput.value = '12.4';
+                if (parseFloat(paceInput.value) === 4) paceInput.value = '2.5';
+                if (parseFloat(elevationInput.value) === 1000) elevationInput.value = '3281';
+                if (parseFloat(tempInput.value) === 20) tempInput.value = '68';
+            } else {
+                // Convert to metric
+                if (parseFloat(distanceInput.value) === 12.4) distanceInput.value = '20';
+                if (parseFloat(paceInput.value) === 2.5) paceInput.value = '4';
+                if (parseFloat(elevationInput.value) === 3281) elevationInput.value = '1000';
+                if (parseFloat(tempInput.value) === 68) tempInput.value = '20';
+            }
+            
+            // Update result display if we have a previous calculation
+            if (lastResult) {
+                updateResultDisplay(lastResult);
+            }
         });
 
         document.getElementById('reset-btn').addEventListener('click', () => {
             document.getElementById('calculator-form').reset();
             uvSlider.value = 0;
-            document.getElementById('result').style.display = 'none';
+            // Reset to appropriate defaults for current unit
+            if (currentUnit === 'imperial') {
+                document.getElementById('distance').value = '12.4';
+                document.getElementById('pace').value = '2.5';
+                document.getElementById('elevation').value = '3281';
+                document.getElementById('temperature').value = '68';
+            } else {
+                document.getElementById('distance').value = '20';
+                document.getElementById('pace').value = '4';
+                document.getElementById('elevation').value = '1000';
+                document.getElementById('temperature').value = '20';
+            }
+            document.getElementById('result-card').style.display = 'none';
+            lastResult = null;
         });
 
-        function calculateWater(distance, temp, uvIndex, elevation, isMouthBreather, unit) {
+        function calculateWater(distance, pace, temp, uvIndex, elevation, isMouthBreather, isHeavySweater, unit) {
             const toMetric = unit === 'imperial';
             const distanceKm = toMetric ? distance * 1.60934 : distance;
+            const paceKmh = toMetric ? pace * 1.60934 : pace;
             const tempC = toMetric ? (temp - 32) * 5/9 : temp;
             const elevationM = toMetric ? elevation * 0.3048 : elevation;
 
-            const hours = (distanceKm + elevationM / 300) / 4;
+            const hours = (distanceKm + elevationM / 300) / paceKmh;
             const tempMult = tempC < 10 ? 0.8 : tempC < 21 ? 1 : tempC < 27 ? 1.3 : tempC < 32 ? 1.6 : 2;
             const uvMult = uvIndex <= 2 ? 0.9 : uvIndex <= 5 ? 1 : uvIndex <= 7 ? 1.15 : uvIndex <= 10 ? 1.3 : 1.4;
             const elevMult = elevationM > 2500 ? 1.2 : elevationM > 1500 ? 1.1 : 1;
             const mouthMult = isMouthBreather ? 1.15 : 1;
+            const sweatMult = isHeavySweater ? 1.25 : 1;
 
             return {
-                liters: hours * 0.5 * tempMult * uvMult * elevMult * mouthMult + 0.5,
+                liters: hours * 0.5 * tempMult * uvMult * elevMult * mouthMult * sweatMult + 0.5,
                 hours,
-                factors: { temp: tempMult, uv: uvMult, elevation: elevMult, mouthBreather: mouthMult }
+                factors: { temp: tempMult, uv: uvMult, elevation: elevMult, mouthBreather: mouthMult, heavySweater: sweatMult },
+                uvIndex: uvIndex
             };
+        }
+
+        function updateResultDisplay(result) {
+            const isImperial = currentUnit === 'imperial';
+            const displayAmount = (isImperial ? result.liters * 33.814 : result.liters).toFixed(1);
+            const displayUnit = isImperial ? 'fl oz' : 'liters';
+
+            document.getElementById('result-amount').textContent = displayAmount;
+            document.getElementById('result-label').textContent = displayUnit;
+            document.getElementById('result-duration').textContent = `For your ${result.hours.toFixed(1)}-hour hike`;
+
+            let details = '';
+            
+            if (result.factors.mouthBreather > 1) details += '<p>Extra water added for mouth breathing.</p>';
+            if (result.factors.heavySweater > 1) details += '<p>Extra water added for higher sweat rate.</p>';
+            if (result.factors.temp > 1.5) details += '<p>Hot weather! Stay hydrated and take frequent breaks in shade.</p>';
+            
+            if (result.factors.uv > 1.3) {
+                const uv = result.uvIndex;
+                details += uv >= 11 ? '<p>Extreme UV exposure. Wear protective clothing, wide-brimmed hat, and SPF 50+ sunscreen. Reapply every 2 hours.</p>' :
+                           uv >= 8 ? '<p>Very high UV exposure. Wear sunglasses, hat, and SPF 30+ sunscreen. Seek shade during peak hours.</p>' :
+                           uv >= 6 ? '<p>High UV exposure. Use SPF 30+ sunscreen and wear a hat. Cover up when possible.</p>' :
+                           '<p>Moderate UV exposure. Use SPF 15+ sunscreen and consider wearing a hat.</p>';
+            }
+            
+            if (result.factors.elevation > 1.1) details += '<p>High elevation increases UV intensity and dehydration. Drink before you feel thirsty.</p>';
+
+            details += '<div class="result-disclaimer">Includes 0.5L emergency reserve. Adjust based on personal sweat rate and fitness level.</div>';
+
+            document.getElementById('result-details').innerHTML = details;
+            document.getElementById('result-card').style.display = 'block';
         }
 
         document.getElementById('calculator-form').addEventListener('submit', e => {
             e.preventDefault();
 
+            // Validate required fields
+            const distanceInput = document.getElementById('distance');
+            const paceInput = document.getElementById('pace');
+            const elevationInput = document.getElementById('elevation');
+            const tempInput = document.getElementById('temperature');
+
+            const distance = parseFloat(distanceInput.value);
+            const pace = parseFloat(paceInput.value);
+            const elevation = parseFloat(elevationInput.value);
+            const temp = parseFloat(tempInput.value);
+
+            // Check if any required field is empty or invalid
+            if (!distanceInput.value || isNaN(distance) || distance <= 0) {
+                distanceInput.setFocus();
+                document.getElementById('distance-validation').open = true;
+                return;
+            }
+            if (!paceInput.value || isNaN(pace) || pace <= 0) {
+                paceInput.setFocus();
+                document.getElementById('pace-validation').open = true;
+                return;
+            }
+            if (!elevationInput.value || isNaN(elevation) || elevation < 0) {
+                elevationInput.setFocus();
+                document.getElementById('elevation-validation').open = true;
+                return;
+            }
+            if (!tempInput.value || isNaN(temp)) {
+                tempInput.setFocus();
+                document.getElementById('temp-validation').open = true;
+                return;
+            }
+
             const result = calculateWater(
-                parseFloat(document.getElementById('distance').value),
-                parseFloat(document.getElementById('temperature').value),
+                distance,
+                pace,
+                temp,
                 parseFloat(uvSlider.value || 0),
-                parseFloat(document.getElementById('elevation').value),
+                elevation,
                 document.getElementById('mouth-breather').checked,
+                document.getElementById('heavy-sweater').checked,
                 currentUnit
             );
 
-            const isImperial = currentUnit === 'imperial';
-            const displayAmount = (isImperial ? result.liters * 33.814 : result.liters).toFixed(1);
-            const displayUnit = isImperial ? 'fl oz' : 'liters';
-            const altAmount = (isImperial ? result.liters : result.liters * 33.814).toFixed(1);
-            const altUnit = isImperial ? 'liters' : 'fl oz';
-
-            document.getElementById('result-amount').textContent = displayAmount;
-            document.getElementById('result-label').textContent = displayUnit + ' of water';
-
-            let details = `That's about ${altAmount} ${altUnit} for your ${result.hours.toFixed(1)}-hour hike.<br><br>`;
+            lastResult = result;
+            updateResultDisplay(result);
             
-            if (result.factors.mouthBreather > 1) details += 'Extra water added for optimal mouth breathing.<br>';
-            if (result.factors.temp > 1.5) details += 'Hot weather! Stay hydrated and take frequent breaks in shade.<br>';
-            
-            if (result.factors.uv > 1.3) {
-                const uv = parseFloat(uvSlider.value || 0);
-                details += uv >= 11 ? 'Extreme UV exposure. Wear protective clothing, wide-brimmed hat, and SPF 50+ sunscreen. Reapply every 2 hours.<br>' :
-                           uv >= 8 ? 'Very high UV exposure. Wear sunglasses, hat, and SPF 30+ sunscreen. Seek shade during peak hours.<br>' :
-                           uv >= 6 ? 'High UV exposure. Use SPF 30+ sunscreen and wear a hat. Cover up when possible.<br>' :
-                           'Moderate UV exposure. Use SPF 15+ sunscreen and consider wearing a hat.<br>';
-            }
-            
-            if (result.factors.elevation > 1.1) details += 'High elevation increases UV intensity and dehydration. Drink before you feel thirsty.<br>';
-
-            details += '<br><em>Includes 0.5L emergency reserve. Adjust based on personal sweat rate and fitness level.</em>';
-
-            const resultNotice = document.getElementById('result');
-            document.getElementById('result-details').innerHTML = details;
-            resultNotice.style.display = 'block';
-            resultNotice.open = true;
-            
-            setTimeout(() => resultNotice.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+            setTimeout(() => document.getElementById('result-card').scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
         });
     </script>
 </body>
