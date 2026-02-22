@@ -207,16 +207,16 @@
         }
 
         calcite-popover {
-            --calcite-popover-max-width: 200px;
+            --calcite-popover-max-size-x: 220px;
         }
 
         .popover-content {
             padding: 12px;
             font-size: 13px;
             line-height: 1.5;
-            max-width: 200px;
-            width: 200px;
+            max-width: 100%;
             box-sizing: border-box;
+            word-wrap: break-word;
         }
 
         .popover-content strong {
@@ -290,12 +290,12 @@
                     </calcite-input-number>
                     <calcite-input-message id="distance-error" status="invalid" icon="exclamationMarkTriangle" style="display: none;">This parameter is required.</calcite-input-message>
                 </calcite-label>
-                <calcite-popover reference-element="distance-required" placement="top" trigger="hover">
-                    <div class="popover-content">
+                <calcite-popover reference-element="distance-required" placement="top" trigger="hover" style="width: auto;">
+                    <div class="popover-content" style="width: auto; max-width: none;">
                         Required
                     </div>
                 </calcite-popover>
-                <calcite-popover reference-element="distance-info" placement="auto" auto-close style="max-width: 200px;">
+                <calcite-popover reference-element="distance-info" placement="auto" auto-close style="--calcite-popover-max-size-x: 220px;">
                     <div class="popover-content">
                         <strong>Why distance matters</strong>
                         <p>Longer distances mean more time on the trail and more physical exertion. Your body loses water through perspiration, breathing, and metabolic processes.</p>
@@ -314,12 +314,12 @@
                     </calcite-input-number>
                     <calcite-input-message id="pace-error" status="invalid" icon="exclamationMarkTriangle" style="display: none;">This parameter is required.</calcite-input-message>
                 </calcite-label>
-                <calcite-popover reference-element="pace-required" placement="top" trigger="hover">
-                    <div class="popover-content">
+                <calcite-popover reference-element="pace-required" placement="top" trigger="hover" style="width: auto;">
+                    <div class="popover-content" style="width: auto; max-width: none;">
                         Required
                     </div>
                 </calcite-popover>
-                <calcite-popover reference-element="pace-info" placement="auto" auto-close style="max-width: 200px;">
+                <calcite-popover reference-element="pace-info" placement="auto" auto-close style="--calcite-popover-max-size-x: 220px;">
                     <div class="popover-content">
                         <strong>Why pace matters</strong>
                         <p>Your hiking pace determines how long you'll be on the trail. Faster paces mean shorter trips but higher exertion. Typical hiking pace is 4km/h (2.5mph) on flat terrain, slower with elevation gain or heavy pack.</p>
@@ -338,12 +338,12 @@
                     </calcite-input-number>
                     <calcite-input-message id="elevation-error" status="invalid" icon="exclamationMarkTriangle" style="display: none;">This parameter is required.</calcite-input-message>
                 </calcite-label>
-                <calcite-popover reference-element="elevation-required" placement="top" trigger="hover">
-                    <div class="popover-content">
+                <calcite-popover reference-element="elevation-required" placement="top" trigger="hover" style="width: auto;">
+                    <div class="popover-content" style="width: auto; max-width: none;">
                         Required
                     </div>
                 </calcite-popover>
-                <calcite-popover reference-element="elevation-info" placement="auto" auto-close style="max-width: 200px;">
+                <calcite-popover reference-element="elevation-info" placement="auto" auto-close style="--calcite-popover-max-size-x: 220px;">
                     <div class="popover-content">
                         <strong>Why elevation gain matters</strong>
                         <p>Climbing requires significantly more energy and oxygen. Every 300m (1,000ft) of elevation gain roughly equals 1km of flat distance in effort. Higher altitudes also increase respiratory water loss due to lower humidity and increased breathing rate.</p>
@@ -362,12 +362,12 @@
                     </calcite-input-number>
                     <calcite-input-message id="temp-error" status="invalid" icon="exclamationMarkTriangle" style="display: none;">This parameter is required.</calcite-input-message>
                 </calcite-label>
-                <calcite-popover reference-element="temp-required" placement="top" trigger="hover">
-                    <div class="popover-content">
+                <calcite-popover reference-element="temp-required" placement="top" trigger="hover" style="width: auto;">
+                    <div class="popover-content" style="width: auto; max-width: none;">
                         Required
                     </div>
                 </calcite-popover>
-                <calcite-popover reference-element="temp-info" placement="auto" auto-close style="max-width: 200px;">
+                <calcite-popover reference-element="temp-info" placement="auto" auto-close style="--calcite-popover-max-size-x: 220px;">
                     <div class="popover-content">
                         <strong>Why temperature matters</strong>
                         <p>Higher temperatures dramatically increase sweat production to cool your body. At 85°F+, you can lose 2x more water than at moderate temperatures. Cold weather also requires hydration, though less so.</p>
@@ -384,7 +384,7 @@
                 </calcite-label>
                 <calcite-slider min="0" max="11" value="0" step="1" ticks="1" label-ticks
                     id="uv-slider" scale="m"></calcite-slider>
-                <calcite-popover reference-element="uv-info" placement="auto" auto-close style="max-width: 200px;">
+                <calcite-popover reference-element="uv-info" placement="auto" auto-close style="--calcite-popover-max-size-x: 220px;">
                     <div class="popover-content">
                         <strong>Why UV index matters</strong>
                         <p>UV radiation heats your skin and increases core body temperature, causing you to sweat more to maintain cooling. Higher UV also means more direct sun exposure, compounding heat effects. UV increases ~10-12% per 1,000 meters elevation.</p>
@@ -400,7 +400,7 @@
                         <calcite-action id="mouth-breather-info" icon="information" text="Info" scale="s" class="info-icon"></calcite-action>
                     </div>
                 </div>
-                <calcite-popover reference-element="mouth-breather-info" placement="auto" auto-close style="max-width: 200px;">
+                <calcite-popover reference-element="mouth-breather-info" placement="auto" auto-close style="--calcite-popover-max-size-x: 220px;">
                     <div class="popover-content">
                         <strong>Why mouth breathing matters</strong>
                         <p>Breathing through your mouth during exercise increases water loss through respiration by about 15%. Mouth breathing bypasses the nasal passages which normally humidify exhaled air, leading to more moisture loss with each breath.</p>
@@ -417,7 +417,7 @@
                         <calcite-action id="heavy-sweater-info" icon="information" text="Info" scale="s" class="info-icon"></calcite-action>
                     </div>
                 </div>
-                <calcite-popover reference-element="heavy-sweater-info" placement="auto" auto-close style="max-width: 200px;">
+                <calcite-popover reference-element="heavy-sweater-info" placement="auto" auto-close style="--calcite-popover-max-size-x: 220px;">
                     <div class="popover-content">
                         <strong>Why sweating rate matters</strong>
                         <p>Some people naturally sweat more due to genetics, fitness level, or higher sweat gland density. Heavy sweaters can lose 20-30% more fluid during exercise compared to average, requiring additional water intake to maintain proper hydration and performance.</p>
@@ -437,7 +437,10 @@
                 <div class="result-header">
                     <div class="result-amount" id="result-amount">0</div>
                     <div class="result-label" id="result-label">liters</div>
-                    <div class="result-duration" id="result-duration"></div>
+                    <div class="result-duration" id="result-duration">
+                        <calcite-icon icon="clock" scale="s"></calcite-icon>
+                        <span id="result-duration-text"></span>
+                    </div>
                 </div>
                 <div class="result-details" id="result-details"></div>
             </div>
@@ -516,6 +519,7 @@
             });
         };
 
+        // Wait for Calcite web components to fully render before accessing shadow DOM
         setTimeout(() => {
             const label = uvSlider.shadowRoot?.querySelectorAll('.tick__label');
             if (label?.[11]) label[11].textContent = '11+';
@@ -577,11 +581,11 @@
 
         // Water calculation
         function calculateWater(distance, pace, temp, uvIndex, elevation, isMouthBreather, isHeavySweater, unit) {
-            const toMetric = unit === 'imperial';
-            const distanceKm = toMetric ? distance * CONVERSION.MILES_TO_KM : distance;
-            const paceKmh = toMetric ? pace * CONVERSION.MILES_TO_KM : pace;
-            const tempC = toMetric ? (temp - 32) * 5/9 : temp;
-            const elevationM = toMetric ? elevation * CONVERSION.FEET_TO_M : elevation;
+            const isImperialInput = unit === 'imperial';
+            const distanceKm = isImperialInput ? distance * CONVERSION.MILES_TO_KM : distance;
+            const paceKmh = isImperialInput ? pace * CONVERSION.MILES_TO_KM : pace;
+            const tempC = isImperialInput ? (temp - 32) * 5/9 : temp;
+            const elevationM = isImperialInput ? elevation * CONVERSION.FEET_TO_M : elevation;
 
             const hours = (distanceKm + elevationM / CONVERSION.ELEVATION_FACTOR) / paceKmh;
             
@@ -625,7 +629,7 @@
 
             document.getElementById('result-amount').textContent = displayAmount;
             document.getElementById('result-label').textContent = displayUnit;
-            document.getElementById('result-duration').innerHTML = `<calcite-icon icon="clock" scale="s"></calcite-icon>${timeText} hike`;
+            document.getElementById('result-duration-text').textContent = `${timeText} hike`;
 
             const details = [];
             if (result.factors.temp > 1.5) details.push('<p>Hot weather! Stay hydrated and take frequent breaks in shade.</p>');
@@ -643,7 +647,7 @@
             distance: (v) => v && !isNaN(v) && v > 0,
             pace: (v) => v && !isNaN(v) && v > 0,
             elevation: (v) => v && !isNaN(v) && v >= 0,
-            temperature: (v) => v && !isNaN(v)
+            temperature: (v) => v && !isNaN(v) && v >= -50 && v <= 60
         };
 
         document.getElementById('calculator-form').addEventListener('submit', e => {
