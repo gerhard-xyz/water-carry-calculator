@@ -206,6 +206,33 @@
         calcite-slider {
             margin-top: 12px;
         }
+        
+        #uv-slider {
+            --calcite-slider-track-fill: linear-gradient(
+                to right,
+                #9DC700 0%, #9DC700 18%,
+                #FFBD00 18%, #FFBD00 45%,
+                #FF9100 45%, #FF9100 64%,
+                #F54F1D 64%, #F54F1D 91%,
+                #9F45CD 91%, #9F45CD 100%
+            );
+        }
+        
+        .uv-color-indicator {
+            display: flex;
+            gap: 0;
+            margin-top: 8px;
+            margin-bottom: 4px;
+            height: 4px;
+            border-radius: 2px;
+            overflow: hidden;
+            opacity: 0.5;
+        }
+        
+        .uv-color-indicator span {
+            display: block;
+            height: 100%;
+        }
 
         .label-with-info {
             display: flex;
@@ -400,7 +427,14 @@
                         <calcite-action id="uv-info" icon="information" text="Info" scale="s" class="info-icon"></calcite-action>
                     </div>
                 </calcite-label>
-                <calcite-slider min="0" max="11" value="0" step="1" ticks="1" label-ticks
+                <div class="uv-color-indicator">
+                    <span style="background: #9DC700; width: 18%;"></span>
+                    <span style="background: #FFBD00; width: 27%;"></span>
+                    <span style="background: #FF9100; width: 19%;"></span>
+                    <span style="background: #F54F1D; width: 27%;"></span>
+                    <span style="background: #9F45CD; width: 9%;"></span>
+                </div>
+                <calcite-slider min="1" max="11" value="5" step="1" ticks="1" label-handles label-ticks
                     id="uv-slider" scale="m"></calcite-slider>
                 <calcite-popover reference-element="uv-info" placement="auto" auto-close style="--calcite-popover-max-size-x: 220px;">
                     <div class="popover-content">
@@ -521,14 +555,37 @@
             }
         };
 
-        // UV Slider configuration
-        uvSlider.histogram = Array.from({length: 12}, (_, i) => [i, i * 5]);
-        const UV_COLORS = ['#92D050', '#FFFF00', '#FFA500', '#FF0000', '#8B00FF'];
-        const UV_THRESHOLDS = [0, 2/11, 5/11, 7/11, 10/11, 1];
-        uvSlider.histogramStops = UV_THRESHOLDS.flatMap((offset, i) => 
-            i === 0 ? [{ offset, color: UV_COLORS[0] }] :
-            [{ offset, color: UV_COLORS[i - 1] }, { offset, color: UV_COLORS[i] }]
-        ).slice(0, -1).concat({ offset: 1, color: UV_COLORS[4] });
+        // UV Index color scheme
+        const UV_RANGES = {
+            1: { label: 'Low', color: '#9DC700' },
+            3: { label: 'Moderate', color: '#FFBD00' },
+            6: { label: 'High', color: '#FF9100' },
+            8: { label: 'Very High', color: '#F54F1D' },
+            10: { label: 'Extreme', color: '#9F45CD' }
+        };
+        
+        const getUVRiskLevel = (value) => {
+            if (value <= 2) return { label: 'Low', color: '#9DC700' };
+            if (value <= 5) return { label: 'Moderate', color: '#FFBD00' };
+            if (value <= 7) return { label: 'High', color: '#FF9100' };
+            if (value <= 10) return { label: 'Very High', color: '#F54F1D' };
+            return { label: 'Extreme', color: '#9F45CD' };
+        };
+        
+        // Configure UV slider with label formatter
+        uvSlider.labelFormatter = function(value, type) {
+            if (type === 'value') {
+                const risk = getUVRiskLevel(value);
+                return risk.label;
+            }
+            if (type === 'tick') {
+                // Show numeric values at key boundaries
+                if (value === 1 || value === 3 || value === 6 || value === 8 || value === 11) {
+                    return value === 11 ? '11+' : value.toString();
+                }
+                return undefined;
+            }
+        };
 
         // Setup popovers and error handling
         const setupRequiredPopovers = () => {
@@ -544,8 +601,6 @@
 
         // Wait for Calcite web components to fully render before accessing shadow DOM
         setTimeout(() => {
-            const label = uvSlider.shadowRoot?.querySelectorAll('.tick__label');
-            if (label?.[11]) label[11].textContent = '11+';
             setupRequiredPopovers();
         }, 500);
 
